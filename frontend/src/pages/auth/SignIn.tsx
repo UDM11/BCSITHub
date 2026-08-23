@@ -65,7 +65,7 @@ const testimonials = [
 export function SignIn() {
   useSEO({
     title: "Student Login",
-    description: "Access your BCSITHub dashboard to download papers, view class notices, compile code, and track your PU GPA achievements.",
+    description: "Access your BCSITHub dashboard to download papers, view structured notes, compile code, and track your PU GPA achievements.",
     keywords: "bcsit login, bcsithub signin, pu student login, pokhara university dashboard login"
   });
 

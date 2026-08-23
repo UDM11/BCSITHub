@@ -30,7 +30,6 @@ import { useInstallModal } from '@/context/InstallModalContext';
 import { apiClient } from '../../lib/apiClient';
 import { watermarkFile } from '../../lib/watermark';
 import { PaperPreviewModal } from '../Notes/PaperPreviewModal';
-import { NoticeReaderModal } from '../common/NoticeReaderModal';
 import LoginRedirectModal from '../common/LoginRedirectModal';
 import { semestersData } from '../../data/notesData';
 
@@ -49,35 +48,19 @@ export function Navbar() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [allPapers, setAllPapers] = useState<any[]>([]);
-  const [allNotices, setAllNotices] = useState<any[]>([]);
   const [selectedPaper, setSelectedPaper] = useState<any | null>(null);
-  const [selectedNotice, setSelectedNotice] = useState<any | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   useEffect(() => {
     const loadSearchData = async () => {
       try {
-        const [papersData, noticesData] = await Promise.all([
-          apiClient.get('/papers'),
-          apiClient.get('/notices')
+        const [papersData] = await Promise.all([
+          apiClient.get('/papers')
         ]);
         
         // Map papers
         const approvedPapers = (papersData as any[]).filter((p: any) => p.approved);
         setAllPapers(approvedPapers);
-
-        // Map notices
-        const mappedNotices = (noticesData as any[]).map((item: any) => ({
-          objectId: item.id,
-          title: item.title,
-          date: new Date(item.date),
-          fileUrl: item.file_url,
-          fileName: item.file_name,
-          fileSize: item.file_size,
-          category: item.category,
-          content: item.content,
-        }));
-        setAllNotices(mappedNotices);
       } catch (err) {
         console.error('Failed to load search data for navbar:', err);
       }
@@ -167,11 +150,7 @@ export function Navbar() {
       ).slice(0, 4)
     : [];
 
-  const filteredNoticesResult = searchQuery
-    ? allNotices.filter(notice =>
-        notice.title.toLowerCase().includes(searchQuery.toLowerCase())
-      ).slice(0, 4)
-    : [];
+
 
   // Close mobile drawer if screen is resized to desktop width
   useEffect(() => {
@@ -271,7 +250,6 @@ export function Navbar() {
     { to: '/notes', icon: FileText, label: 'Notes' },
     { to: '/past-papers', icon: GraduationCap, label: 'Past Papers' },
     { to: '/colleges', icon: Users, label: 'Colleges' },
-    { to: '/pu-notices', icon: ScrollText, label: 'PU Notices' },
   ];
 
   const toolsLinks = [
@@ -395,7 +373,7 @@ export function Navbar() {
                           <Search className="w-5 h-5 text-indigo-500 absolute left-4 top-1/2 -translate-y-1/2" />
                           <input
                             type="text"
-                            placeholder="Search syllabus, papers, notices..."
+                            placeholder="Search syllabus, papers..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             autoFocus
@@ -411,7 +389,7 @@ export function Navbar() {
                           )}
                         </div>
                         {!searchQuery && (
-                          <p className="text-xs text-slate-400 mt-2 px-1">Search across subjects, past papers, and PU notices</p>
+                          <p className="text-xs text-slate-400 mt-2 px-1">Search across subjects and past papers</p>
                         )}
                       </div>
 
@@ -476,36 +454,9 @@ export function Navbar() {
                             </div>
                           )}
 
-                          {/* Notices */}
-                          {filteredNoticesResult.length > 0 && (
-                            <div className="py-2 px-3">
-                              <span className="text-[10px] font-bold text-amber-500 uppercase tracking-widest px-1 block mb-1.5">PU Notices</span>
-                              {filteredNoticesResult.map(notice => (
-                                <div
-                                  key={notice.objectId}
-                                  onClick={() => {
-                                    setSelectedNotice(notice);
-                                    setSearchQuery('');
-                                    setShowSearch(false);
-                                  }}
-                                  className="flex items-center justify-between px-3 py-2.5 hover:bg-amber-50/60 rounded-xl cursor-pointer transition-colors group"
-                                >
-                                  <div className="flex items-center space-x-3">
-                                    <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                      <Bell className="w-4 h-4 text-amber-600" />
-                                    </div>
-                                    <div className="flex flex-col min-w-0">
-                                      <span className="text-sm font-semibold text-slate-700 truncate group-hover:text-amber-700">{notice.title}</span>
-                                      <span className="text-xs text-slate-400">{notice.category} · {notice.date.toLocaleDateString()}</span>
-                                    </div>
-                                  </div>
-                                  <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-amber-500 flex-shrink-0" />
-                                </div>
-                              ))}
-                            </div>
-                          )}
 
-                          {filteredSubjects.length === 0 && filteredPapersResult.length === 0 && filteredNoticesResult.length === 0 && (
+
+                          {filteredSubjects.length === 0 && filteredPapersResult.length === 0 && (
                             <div className="py-10 text-center">
                               <Search className="w-8 h-8 text-slate-200 mx-auto mb-2" />
                               <span className="text-sm text-slate-400">No results for &ldquo;{searchQuery}&rdquo;</span>
@@ -520,7 +471,6 @@ export function Navbar() {
                           {[
                             { icon: BookOpen, label: 'Notes', color: 'text-indigo-600 bg-indigo-50', to: '/notes' },
                             { icon: FileText, label: 'Papers', color: 'text-violet-600 bg-violet-50', to: '/past-papers' },
-                            { icon: ScrollText, label: 'Notices', color: 'text-amber-600 bg-amber-50', to: '/pu-notices' },
                           ].map(({ icon: Ic, label, color, to }) => (
                             <button
                               key={to}
@@ -971,20 +921,7 @@ export function Navbar() {
         )}
       </AnimatePresence>
 
-      {/* Notice Reader Modal */}
-      <AnimatePresence>
-        {selectedNotice && (
-          <NoticeReaderModal
-            notice={selectedNotice}
-            onClose={() => setSelectedNotice(null)}
-            isAuthenticated={!!user}
-            onAuthRequired={() => {
-              setSelectedNotice(null);
-              setShowLoginModal(true);
-            }}
-          />
-        )}
-      </AnimatePresence>
+
 
       {/* Auth Gate Redirect Modal */}
       <LoginRedirectModal

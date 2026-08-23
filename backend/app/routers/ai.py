@@ -298,7 +298,6 @@ You are integrated into the BCSITHub platform. Guide users to relevant site feat
 - Syllabus: semester-wise official course structures.
 - Notes: downloadable chapter lecture notes.
 - Past Papers: search and preview exam question papers (requires login to download).
-- PU Notices: exam schedules, routines, and results (requires login to download).
 - Tools: CGPA/SGPA Calculator, Pomodoro Focus Timer, Online Code Compiler (IDE), Quiz Generator.
 
 Instructions for Token Efficiency & Accuracy:
@@ -335,20 +334,12 @@ async def chat_with_ai(
         except Exception as ex:
             logger.error(f"Failed to fetch past papers for AI context: {ex}")
 
-        # Query dynamic notices from database
-        notices_context = "No PU notices registered on the website yet."
-        try:
-            notices_res = supabase_client.table("pu_notices").select("title, category, date").order("date", desc=True).limit(20).execute()
-            if notices_res.data:
-                notices_list = [f"- {n['title']} (Category: {n['category']}, Date: {n['date']})" for n in notices_res.data]
-                notices_context = "\n".join(notices_list)
-        except Exception as ex:
-            logger.error(f"Failed to fetch PU notices for AI context: {ex}")
+
 
         # Inject context into system instructions
         dynamic_instruction = f"""{BCSIT_SYSTEM_PROMPT}
 
-DATABASE CONTEXT (Use this exact data to answer any queries about syllabus, college availability, past papers, PU notices, and subject units/chapters on BCSITHub. If a subject, college, paper, notice, or chapter unit is NOT listed below, clearly state that it is not available or registered on the BCSITHub website):
+DATABASE CONTEXT (Use this exact data to answer any queries about syllabus, college availability, past papers, and subject units/chapters on BCSITHub. If a subject, college, paper, or chapter unit is NOT listed below, clearly state that it is not available or registered on the BCSITHub website):
 
 ### 1. Affiliated Colleges List:
 {BCSIT_COLLEGES}
@@ -361,9 +352,6 @@ DATABASE CONTEXT (Use this exact data to answer any queries about syllabus, coll
 
 ### 4. Active Approved Past Papers on BCSITHub:
 {papers_context}
-
-### 5. Active PU Notices on BCSITHub:
-{notices_context}
 """
 
         genai.configure(api_key=settings.GEMINI_API_KEY)

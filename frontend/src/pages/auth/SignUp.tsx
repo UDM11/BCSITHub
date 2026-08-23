@@ -103,7 +103,7 @@ const collegeOptions = [
 const testimonials = [
   {
     quote: "BCSITHub has completely transformed how I study. The chapter notes and solved past questions are organized exactly how we need them for PU exams!",
-    author: "Umesh Darlami",
+    author: "Aayush Pokharel",
     role: "Semester 4 Student",
     stars: 5
   },

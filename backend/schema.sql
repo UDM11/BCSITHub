@@ -60,31 +60,6 @@ create policy "Allow paper owner or admin to update/delete"
   ));
 
 
--- 3. Pokhara University Notices
-create table if not exists public.pu_notices (
-  id uuid default gen_random_uuid() primary key,
-  title text not null,
-  date timestamp with time zone default timezone('utc'::text, now()) not null,
-  file_url text not null,
-  file_name text not null,
-  file_size text not null,
-  category text not null check (category in ('Exam', 'Admission', 'Result', 'General')),
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null
-);
-
--- Enable RLS on PU Notices
-alter table public.pu_notices enable row level security;
-
-create policy "Allow anyone to read notices"
-  on public.pu_notices for select
-  using (true);
-
-create policy "Allow admins to insert/update/delete notices"
-  on public.pu_notices for all
-  using (exists (
-    select 1 from public.profiles where id = auth.uid() and role = 'admin'
-  ));
-
 
 -- 4. Sync triggers: Automatic profile creation when auth.users is populated
 create or replace function public.handle_new_user()

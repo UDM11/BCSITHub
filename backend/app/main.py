@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, HTMLResponse
-from app.routers import auth, papers, notices, quiz, compiler, ai, support, pomodoro, newsletter
+from app.routers import auth, papers, quiz, compiler, ai, support, pomodoro, newsletter
 from app.config import settings
 
 app = FastAPI(
@@ -30,7 +30,7 @@ app.add_middleware(
 # Register routers
 app.include_router(auth.router, prefix="/api")
 app.include_router(papers.router, prefix="/api")
-app.include_router(notices.router, prefix="/api")
+
 app.include_router(quiz.router, prefix="/api")
 app.include_router(compiler.router, prefix="/api")
 app.include_router(ai.router, prefix="/api")
@@ -474,47 +474,7 @@ async def serve_pomodoro_page():
         keywords="pomodoro timer, study timer, focus timer, productivity timer, bcsit study tool, time management",
     )
 
-# ── PU Notices ──
-@app.get("/pu-notices", response_class=HTMLResponse)
-async def serve_notices_page():
-    return inject_seo_meta(
-        title="Pokhara University Notices & Announcements | BCSITHub",
-        description="Stay updated with the latest Pokhara University notices, exam schedules, result announcements, and important circulars for BCSIT students.",
-        url=f"{BASE_URL}/pu-notices",
-        keywords="pu notices, pokhara university notices, exam notice, bcsit notice, pu announcements, exam schedule",
-    )
 
-# ── PU Notice Detail (existing, now using helper) ──
-@app.get("/pu-notices/{notice_slug}", response_class=HTMLResponse)
-async def serve_notice_page(notice_slug: str):
-    notice_data = None
-    try:
-        from app.client import supabase_client
-        res = supabase_client.table("pu_notices").select("id, title, category, content, date").execute()
-        notices = res.data or []
-        for n in notices:
-            if slugify(n.get("title", "")) == notice_slug:
-                notice_data = n
-                break
-    except Exception as e:
-        print("Failed to fetch notice for SEO:", e)
-        
-    if notice_data:
-        excerpt = notice_data.get("content") or f"Official Pokhara University notice published on {notice_data.get('date')}."
-        description = excerpt[:160] + "..." if len(excerpt) > 160 else excerpt
-        return inject_seo_meta(
-            title=f"{notice_data['title']} - Pokhara University Notice | BCSITHub",
-            description=description,
-            url=f"{BASE_URL}/pu-notices/{notice_slug}",
-            keywords=f"pu notice, pokhara university, exam notice, bcsit notice, {notice_data['category']}",
-        )
-    
-    return inject_seo_meta(
-        title="Pokhara University Notice | BCSITHub",
-        description="Official Pokhara University notice and announcement on BCSITHub.",
-        url=f"{BASE_URL}/pu-notices/{notice_slug}",
-        keywords="pu notice, pokhara university notice",
-    )
 
 # ── Privacy Policy ──
 @app.get("/privacy-policy", response_class=HTMLResponse)

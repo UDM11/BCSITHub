@@ -79,7 +79,7 @@ async def verify_subscription(req: VerifyRequest):
         if not update_res.data:
             raise HTTPException(status_code=400, detail="Failed to complete subscription activation.")
             
-        return {"message": "Subscription activated successfully! You are now subscribed to PU notices.", "verified": True}
+        return {"message": "Subscription activated successfully! You are now subscribed to our newsletter.", "verified": True}
     except HTTPException as he:
         raise he
     except Exception as e:

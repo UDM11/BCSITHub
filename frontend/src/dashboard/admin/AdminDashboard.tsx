@@ -17,7 +17,6 @@ import {
 import { AdminOverview } from "./AdminOverview";
 import { AdminUsers } from "./AdminUsers";
 import { AdminPapers } from "./AdminPapers";
-import { AdminNotices } from "./AdminNotices";
 import { AdminAnalytics } from "./AdminAnalytics";
 import { AdminTickets } from "./AdminTickets";
 
@@ -37,7 +36,6 @@ interface AdminStats {
   todayRegistrations: number;
   totalPapers: number;
   pendingPapers: number;
-  totalNotices: number;
 }
 
 export default function AdminDashboard() {
@@ -53,8 +51,7 @@ export default function AdminDashboard() {
     totalAdmins: 0,
     todayRegistrations: 0,
     totalPapers: 0,
-    pendingPapers: 0,
-    totalNotices: 0
+    pendingPapers: 0
   });
   
   const [loading, setLoading] = useState(true);
@@ -85,10 +82,9 @@ export default function AdminDashboard() {
 
   const fetchUsersAndStats = async () => {
     try {
-      const [usersData, papersData, noticesData] = await Promise.all([
+      const [usersData, papersData] = await Promise.all([
         apiClient.get("/auth/users") as Promise<any[]>,
-        apiClient.get("/papers?approved_only=false") as Promise<any[]>,
-        apiClient.get("/notices") as Promise<any[]>
+        apiClient.get("/papers?approved_only=false") as Promise<any[]>
       ]);
 
       setTotalUserCount(usersData.length);
@@ -116,7 +112,6 @@ export default function AdminDashboard() {
 
       const totalPapers = papersData.length;
       const pendingPapers = papersData.filter((p: any) => !p.approved).length;
-      const totalNotices = noticesData.length;
 
       setStats({
         totalUsers,
@@ -125,8 +120,7 @@ export default function AdminDashboard() {
         totalAdmins,
         todayRegistrations,
         totalPapers,
-        pendingPapers,
-        totalNotices
+        pendingPapers
       });
     } catch (error: any) {
       console.error("Error fetching users & stats:", error);
@@ -174,7 +168,6 @@ export default function AdminDashboard() {
     { id: "overview", label: "Overview", icon: Activity },
     { id: "users", label: "User Management", icon: Users },
     { id: "papers", label: "Manage Papers", icon: FileText },
-    { id: "notices", label: "Manage Notices", icon: Bell },
     { id: "tickets", label: "Support Tickets", icon: CheckSquare },
     { id: "analytics", label: "Platform Health", icon: BarChart3 },
   ];
@@ -377,7 +370,6 @@ export default function AdminDashboard() {
               {activeTab === "overview" && "Dashboard Overview"}
               {activeTab === "users" && "User Accounts & Role Administration"}
               {activeTab === "papers" && "Past Papers & Files Index"}
-              {activeTab === "notices" && "PU Announcements & Notices"}
               {activeTab === "analytics" && "Platform Operations & Analytics"}
             </h2>
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">
@@ -436,7 +428,6 @@ export default function AdminDashboard() {
               { title: "Total Profiles", value: stats.totalUsers, icon: Users, color: "text-indigo-600 bg-indigo-50 border-indigo-100" },
               { title: "Syllabus Papers", value: stats.totalPapers, icon: FileText, color: "text-emerald-600 bg-emerald-50 border-emerald-100" },
               { title: "Pending Papers", value: stats.pendingPapers, icon: Clock, color: "text-amber-600 bg-amber-50 border-amber-100" },
-              { title: "PU Notices", value: stats.totalNotices, icon: Bell, color: "text-purple-600 bg-purple-50 border-purple-100" },
               { title: "Today Signups", value: stats.todayRegistrations, icon: Clock, color: "text-pink-600 bg-pink-50 border-pink-100" }
             ].map((stat, idx) => (
               <div key={idx} className="bg-white border border-slate-200/60 p-5 rounded-2xl flex flex-col justify-between gap-2.5 shadow-sm hover:shadow-md transition-shadow text-left">
@@ -489,11 +480,7 @@ export default function AdminDashboard() {
                 />
               )}
 
-              {activeTab === "notices" && (
-                <AdminNotices 
-                  onNoticeUpdate={fetchUsersAndStats}
-                />
-              )}
+
 
               {activeTab === "tickets" && (
                 <AdminTickets />

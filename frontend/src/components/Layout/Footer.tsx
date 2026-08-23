@@ -131,7 +131,6 @@ export function Footer() {
     { name: 'Subject Notes', href: '/notes' },
     { name: 'Past Exam Papers', href: '/past-papers' },
     { name: 'PU Colleges', href: '/colleges' },
-    { name: 'University Notices', href: '/pu-notices' },
   ];
 
   const learningTools = [
@@ -179,7 +178,7 @@ export function Footer() {
             {/* Newsletter Input */}
             <div className="space-y-3 pt-2">
               <h4 className="text-xs font-bold uppercase text-slate-400 tracking-wider">
-                Subscribe to PU Exam Notices
+                Subscribe to our Newsletter
               </h4>
               <AnimatePresence mode="wait">
                 {subscribed ? (
@@ -196,7 +195,7 @@ export function Footer() {
                       <span>Subscription Successful!</span>
                     </div>
                     <p className="text-[10px] text-emerald-400/80 font-normal leading-relaxed">
-                      You are now registered. We will dispatch critical Pokhara University notices to your inbox instantly.
+                      You are now registered. We will dispatch newsletter updates to your inbox instantly.
                     </p>
                   </motion.div>
                 ) : showOtpInput ? (

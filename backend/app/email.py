@@ -331,7 +331,7 @@ def send_newsletter_otp_email(to_email: str, otp: str) -> bool:
                 <td class="content">
                     <h2 class="greeting">Hello Student! 🔔</h2>
                     <p class="paragraph">
-                        You requested to subscribe to our newsletter for Pokhara University Exam Notices. Use the 6-digit verification code below to verify your email address.
+                        You requested to subscribe to our newsletter. Use the 6-digit verification code below to verify your email address.
                     </p>
                     
                     <div class="otp-container">
@@ -375,75 +375,4 @@ def send_newsletter_otp_email(to_email: str, otp: str) -> bool:
     except Exception as e:
         logger.error(f"Failed to send newsletter verification email to {to_email}: {e}")
         return False
-def send_notice_alert_email(to_email: str, notice_title: str, notice_category: str, notice_content: Optional[str], file_url: Optional[str]) -> bool:
-    subject = f"🔔 New Notice: {notice_title}"
-    
-    # Notice content fallback
-    content_snippet = notice_content or "A new Pokhara University notice has been uploaded. Please check the attachment or visit our platform."
-        
-    html_body = f"""<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-    <title>{subject}</title>
-    {_email_style_header()}
-</head>
-<body>
-    <div class="wrapper">
-        <table role="presentation" cellpadding="0" cellspacing="0" class="container" align="center">
-            <tr>
-                <td class="header" style="text-align: center;">
-                    <a href="{settings.FRONTEND_URL}" style="display: block; text-decoration: none; margin-bottom: 4px;">
-                        <img src="{settings.FRONTEND_URL}/logo.png" alt="BCSITHub Logo" style="width: 50px; height: 50px; border-radius: 12px; object-fit: cover; display: inline-block; vertical-align: middle; border: 1.5px solid rgba(255,255,255,0.25);" />
-                        <span style="font-size: 24px; font-weight: 800; color: #ffffff; letter-spacing: -0.5px; margin-left: 10px; display: inline-block; vertical-align: middle; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">BCSIT<span style="color:#818cf8;">Hub</span></span>
-                    </a>
-                    <div class="header-subtitle">Pokhara University &mdash; BCSIT Student Portal</div>
-                </td>
-            </tr>
-            <tr>
-                <td class="content">
-                    <div style="display: inline-block; background-color: #e0e7ff; color: #4338ca; font-size: 11px; font-weight: 800; text-transform: uppercase; padding: 4px 12px; border-radius: 9999px; margin-bottom: 16px;">
-                        📌 {notice_category} Notice
-                    </div>
-                    
-                    <h2 class="greeting" style="margin-bottom: 16px;">{notice_title}</h2>
-                    
-                    <p class="paragraph" style="white-space: pre-wrap; word-break: break-word;">
-                        {content_snippet}
-                    </p>
-                    
-                    <div class="btn-container" style="margin-top: 28px; margin-bottom: 0;">
-                        <a href="{settings.FRONTEND_URL}/pu-notices" target="_blank" class="btn">🌐 View Notices Dashboard</a>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="footer">
-                    <div class="footer-bold">BCSITHub Platform Alerts</div>
-                    <p class="footer-text">You received this notification because you are a registered student or newsletter subscriber on BCSITHub.</p>
-                    <p class="footer-text" style="margin-top: 12px;">&copy; 2026 BCSITHub. All rights reserved.</p>
-                </td>
-            </tr>
-        </table>
-    </div>
-</body>
-</html>"""
 
-    try:
-        msg = MIMEMultipart("alternative")
-        msg["Subject"] = subject
-        msg["From"] = f"{settings.SMTP_FROM_NAME} <{settings.SMTP_EMAIL}>"
-        msg["To"] = to_email
-        msg.attach(MIMEText(html_body, "html"))
-
-        with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT) as server:
-            server.ehlo()
-            server.starttls()
-            server.login(settings.SMTP_EMAIL, settings.SMTP_PASSWORD)
-            server.sendmail(settings.SMTP_EMAIL, to_email, msg.as_string())
-
-        return True
-    except Exception as e:
-        logger.error(f"Failed to send notice alert email to {to_email}: {e}")
-        return False

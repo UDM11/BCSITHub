@@ -78,18 +78,7 @@ export const AdminOverview: React.FC<AdminOverviewProps> = ({
               </span>
             </button>
 
-            <button
-              onClick={() => navigate("/pu-notices")}
-              className="w-full bg-slate-50 hover:bg-slate-100 border border-slate-200 p-3.5 rounded-2xl flex items-center justify-between text-xs font-bold text-slate-700 transition-all cursor-pointer group"
-            >
-              <span className="flex items-center gap-2.5">
-                <Award className="w-4.5 h-4.5 text-emerald-600" />
-                Manage Pokhara University Notices
-              </span>
-              <span className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-lg px-2.5 py-0.5 font-bold">
-                Announcements
-              </span>
-            </button>
+
           </div>
         </CardContent>
       </Card>

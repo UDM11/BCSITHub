@@ -37,7 +37,6 @@ import { QuizGenerator } from './pages/QuizGenerator';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { TermsOfService } from './pages/TermsOfService';
 import { Support } from './pages/Support';
-import PUNotices from './pages/PUNotices';
 import UploadPaper from './pages/UploadPaper';
 import SemesterSubjects from './pages/Notes/SemesterSubjects';
 import SubjectChapters from './pages/Notes/SubjectChapters';
@@ -148,8 +147,7 @@ function AppContent() {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/support" element={<Support />} />
-          <Route path="/pu-notices" element={<PUNotices />} />
-          <Route path="/pu-notices/:noticeId" element={<PUNotices />} />
+
 
           <Route path="/verify" element={<OTPVerification />} />
           <Route path="/auth/callback" element={<OAuthCallback />} />

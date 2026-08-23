@@ -94,10 +94,7 @@ const faqs = [
     question: 'Which are the best BCSIT colleges in Nepal affiliated with Pokhara University?',
     answer: 'You can explore our Colleges page for a comprehensive list of top BCSIT colleges in Nepal, including Nepal College of Information Technology (NCIT), Gandaki College of Engineering, Prime College, and others with address details.',
   },
-  {
-    question: 'Where can I see the latest Pokhara University BCSIT notices?',
-    answer: 'We fetch and publish official exam schedules, result updates, and academic notifications in real-time under the PU Notices panel, keeping you updated instantly.',
-  },
+
   {
     question: 'Does the portal provide study tools like a CGPA Calculator or Online Compiler?',
     answer: 'Yes! BCSITHub includes built-in academic utilities: a PU SGPA/CGPA calculator, a Pomodoro timer for focus, an online multi-language compiler for running code draft scripts, and an AI quiz generator.',

@@ -22,12 +22,7 @@ interface StudentOverviewProps {
   setActiveTab: (tab: string) => void;
 }
 
-interface Notice {
-  id: string;
-  title: string;
-  category: string;
-  date: string;
-}
+
 
 const StudentOverview: React.FC<StudentOverviewProps> = ({
   studentName,
@@ -37,32 +32,6 @@ const StudentOverview: React.FC<StudentOverviewProps> = ({
   setActiveTab,
 }) => {
   const navigate = useNavigate();
-  const [notices, setNotices] = useState<Notice[]>([]);
-  const [noticesLoading, setNoticesLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchRecentNotices = async () => {
-      try {
-        setNoticesLoading(true);
-        const data = await apiClient.get("/notices") as any[];
-        // Map and slice to get the latest 3 notices
-        const mapped = data
-          .map((item) => ({
-            id: item.id,
-            title: item.title,
-            category: item.category || "General",
-            date: item.date || item.created_at,
-          }))
-          .slice(0, 3);
-        setNotices(mapped);
-      } catch (error) {
-        console.error("Error loading notices in overview:", error);
-      } finally {
-        setNoticesLoading(false);
-      }
-    };
-    fetchRecentNotices();
-  }, []);
 
   const [pomodoroStats, setPomodoroStats] = useState({
     totalSessions: 0,
@@ -225,56 +194,7 @@ const StudentOverview: React.FC<StudentOverviewProps> = ({
         {/* RIGHT COMPONENT: Announcements & Campus Details */}
         <div className="lg:col-span-4 space-y-6">
           
-          {/* Recent PU Notices */}
-          <Card className="border border-slate-200/60 dark:border-slate-200/60 shadow-sm bg-white dark:bg-white rounded-3xl overflow-hidden">
-            <CardContent className="p-6 space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-                <h3 className="text-xs font-black text-slate-800 dark:text-slate-800 uppercase tracking-wider flex items-center gap-2">
-                  <Bell className="w-4 h-4 text-indigo-500" />
-                  PU Notices
-                </h3>
-                <button
-                  onClick={() => navigate("/pu-notices")}
-                  className="text-[9px] font-black text-indigo-500 hover:underline uppercase tracking-widest border-0 bg-transparent cursor-pointer flex items-center gap-0.5"
-                >
-                  View All <ExternalLink className="w-2.5 h-2.5" />
-                </button>
-              </div>
 
-              <div className="space-y-3">
-                {noticesLoading ? (
-                  [1, 2, 3].map((i) => (
-                    <div key={i} className="space-y-1.5 animate-pulse">
-                      <div className="h-3 bg-slate-100 dark:bg-slate-800 rounded w-full" />
-                      <div className="h-2 bg-slate-50 dark:bg-slate-800 rounded w-1/3" />
-                    </div>
-                  ))
-                ) : notices.length > 0 ? (
-                  notices.map((notice) => (
-                    <div 
-                      key={notice.id}
-                      onClick={() => navigate(`/pu-notices/${notice.id}`)}
-                      className="group cursor-pointer border-b border-slate-50 last:border-0 pb-3 last:pb-0 space-y-1"
-                    >
-                      <h4 className="text-[11px] font-bold text-slate-700 leading-snug group-hover:text-indigo-500 transition-colors line-clamp-2">
-                        {notice.title}
-                      </h4>
-                      <div className="flex items-center gap-2 text-[9px] font-bold text-slate-400 uppercase tracking-widest">
-                        <span className="bg-indigo-50 text-indigo-600 px-1.5 py-0.5 rounded text-[8px]">
-                          {notice.category}
-                        </span>
-                        <span>
-                          {new Date(notice.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-                        </span>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-[10px] font-bold text-slate-400 text-center py-4 uppercase tracking-wider">No notices found</p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
 
           {/* Academic Info */}
           <Card className="border border-slate-200/60 shadow-sm bg-white rounded-3xl overflow-hidden">

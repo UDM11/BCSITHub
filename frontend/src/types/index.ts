@@ -77,15 +77,6 @@ export interface Faculty {
   college_id: string;
 }
 
-export interface Notice {
-  id: string;
-  title: string;
-  content: string;
-  college_id?: string;
-  priority: 'low' | 'medium' | 'high';
-  created_at: string;
-}
-
 export interface NoteFile {
   title: string;
   url: string;
